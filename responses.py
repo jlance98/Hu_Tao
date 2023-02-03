@@ -1,17 +1,17 @@
-import random
+import mangadex
 
 
 def handle_response(message: str) -> str:
     p_message = message.lower()
 
-    if p_message == 'hello':
-        return 'Hey there!'
+    func, *param = p_message.split(" ", 1)
 
-    if p_message == 'roll':
-        return str(random.randint(1, 6))
+    if func == 'help':
+        return 'Help commands coming soon'
 
-    if p_message == 'help':
-        return 'This is a help message that you can modify'
+    if func == 'search':
+        ids = mangadex.search_manga(message, param[0])
+        return f'{ids}'
 
     else:
         return p_message
