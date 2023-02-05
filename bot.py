@@ -25,7 +25,7 @@ def run_discord_bot():
 
     @client.event
     async def on_ready():
-        print(f'{client.user} is now running!')
+        print(f'{client.user} is now running!\n')
 
     @client.event
     async def on_message(message):
