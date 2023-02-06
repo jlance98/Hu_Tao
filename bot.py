@@ -49,7 +49,7 @@ def run_discord_bot():
 
     @hutao.command()
     async def latest(ctx, arg):
-        latest_chId, latest_chNum, latest_chTtl = mangadex.manga_latest_chapter(arg)
+        latest_chId, latest_chNum, latest_chTtl = mangadex.manga_latest_chapter(arg, False)
         if latest_chId == "N/A":
             result = "No manga could be found with that title in Mangadex."
         else:

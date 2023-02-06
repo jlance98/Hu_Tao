@@ -5,7 +5,6 @@ import os
 import difflib
 import json
 import re
-import shlex
 
 load_dotenv()
 
@@ -74,12 +73,14 @@ def manga_search(search_input: str):
 
 
 # Gets and returns information of manga's latest english chapter
-def manga_latest_chapter(search: str):
-    _, search = manga_search(search)
+def manga_latest_chapter(search: str, is_correct_id: bool):
 
-    # Checks if nothing was returned
-    if search == "N/A":
-        return "N/A", "N/A", "N/A"
+    # Uses is_correct_id to avoid having to do an extra GET request to Mangadex
+    if not is_correct_id:
+        _, search = manga_search(search)
+        # Checks if nothing was returned
+        if search == "N/A":
+            return "N/A", "N/A", "N/A"
 
     r = requests.get(
         f"{base_url}/chapter",
@@ -106,10 +107,10 @@ def manga_read_chapter(title, read_chapter):
 
     # If user inputs "-l", use latest chapter of manga
     if read_chapter == "-l":
-        _, read_chapter, _ = manga_latest_chapter(manga_id)
+        _, read_chapter, _ = manga_latest_chapter(manga_id, True)
     else:
         # Check if user chapter number is above the latest chapter
-        _, latest_chNum, _ = manga_latest_chapter(manga_id)
+        _, latest_chNum, _ = manga_latest_chapter(manga_id, True)
         if float(read_chapter) > float(latest_chNum):
             return "N/A", _
 
@@ -126,7 +127,7 @@ def manga_check_update():
     outdated_mangas = []
 
     for current_manga in current_db:
-        _, latest_chNum, _ = manga_latest_chapter(current_manga["manga_id"])
+        _, latest_chNum, _ = manga_latest_chapter(current_manga["manga_id"], True)
         if float(current_manga["read_chapter"]) != float(latest_chNum):
             manga = [current_manga["manga_id"], current_manga["manga_title"]]
             outdated_mangas.append(manga)
